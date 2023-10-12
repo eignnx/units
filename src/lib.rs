@@ -110,10 +110,38 @@ where
 #[test]
 fn test_mul_div() {
     let mass = Quantity::<_, Unit<1, 0, 0>>::new(0.5);
-    let length = Quantity::<_, Unit<0, 1, 0>>::new(1.0);
+    let displacement = Quantity::<_, Unit<0, 1, 0>>::new(1.0);
     let time = Quantity::<_, Unit<0, 0, 1>>::new(2.0);
 
-    let force = mass * length / time / time;
+    let force = mass * displacement / time / time;
 
     println!("{force:?}");
+}
+
+impl<T1, T2, T3, const KG: i8, const M: i8, const S: i8> Add<Quantity<T2, Unit<KG, M, S>>>
+    for Quantity<T1, Unit<KG, M, S>>
+where
+    T1: Add<T2, Output = T3>,
+{
+    type Output = Quantity<T3, Unit<KG, M, S>>;
+    fn add(self, rhs: Quantity<T2, Unit<KG, M, S>>) -> Self::Output {
+        Quantity {
+            value: self.value + rhs.value,
+            unit: Unit,
+        }
+    }
+}
+
+impl<T1, T2, T3, const KG: i8, const M: i8, const S: i8> Sub<Quantity<T2, Unit<KG, M, S>>>
+    for Quantity<T1, Unit<KG, M, S>>
+where
+    T1: Sub<T2, Output = T3>,
+{
+    type Output = Quantity<T3, Unit<KG, M, S>>;
+    fn sub(self, rhs: Quantity<T2, Unit<KG, M, S>>) -> Self::Output {
+        Quantity {
+            value: self.value - rhs.value,
+            unit: Unit,
+        }
+    }
 }
